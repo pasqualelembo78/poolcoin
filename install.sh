@@ -60,6 +60,10 @@ cd poolcoin || exit 1
 echo "[5/5] Installazione dipendenze Node.js del poolcoin..."
 npm install
 
+echo "[6/6] Avvio Redis server..."
+redis-server --daemonize yes
+echo "✔ Redis server avviato"
+
 echo "✔ poolcoin installato in ~/poolcoin"
 echo "✔ Avvio esempio: cd ~/poolcoin && node init.js"
 echo "✔ Log completo: $LOGFILE"
