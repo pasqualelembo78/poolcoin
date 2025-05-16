@@ -64,6 +64,36 @@ echo "[6/6] Avvio Redis server..."
 redis-server --daemonize yes
 echo "✔ Redis server avviato"
 
+echo "[7/7] Creazione servizio systemd per poolcoin..."
+
+sudo tee /etc/systemd/system/poolcoin.service > /dev/null <<EOF
+[Unit]
+Description=Mevacoin Poolcoin Service
+After=network.target redis.service
+Wants=redis.service
+
+[Service]
+User=$USER
+WorkingDirectory=/home/$USER/poolcoin
+ExecStart=/usr/local/bin/node init.js
+Restart=on-failure
+RestartSec=5
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=poolcoin
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+sudo systemctl daemon-reload
+sudo systemctl enable poolcoin.service
+sudo systemctl start poolcoin.service
+
+echo "✔ Servizio poolcoin avviato e abilitato all'avvio"
+
+
+
 echo "✔ poolcoin installato in ~/poolcoin"
 echo "✔ Avvio esempio: cd ~/poolcoin && node init.js"
 echo "✔ Log completo: $LOGFILE"
